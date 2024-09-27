@@ -38,6 +38,8 @@ widgets:
       - class: Matrix
         cols: 3
         items:
+          - mpc_steer_cmd
+          - mpc_mpc_steer_cmd
           - mpc_lateral_error
           - mpc_yaw_error
 
@@ -160,6 +162,28 @@ widgets:
 
   # MPC
   # https://github.com/AutomotiveAIChallenge/autoware.universe/blob/awsim-stable/control/mpc_lateral_controller/src/mpc.cpp
+  - class: Titled
+    label: mpc_steer_cmd
+    title: Steer Cmd
+    input: { class: subscription, topic: /lateral/diagnostic, field: data@0}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: mpc_mpc_steer_cmd
+    title: MPC Rerult
+    input: { class: subscription, topic: /lateral/diagnostic, field: data@1}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
   - class: Titled
     label: mpc_lateral_error
     title: Lateral Error[m]
