@@ -27,14 +27,23 @@ widgets:
       - class: Matrix
         cols: 3
         items:
-          - speed
+          - speed_kph
           - acceleration
           - steering_tire_angle
+          - speed_mps
+
+      - class: Simple 
+        const: Others
+
+      - class: Matrix
+        cols: 3
+        items:
           - control-mode
           - emergency
           # - joy-delay
           # - posmode
 
+  # Actuation_CMD(Pedal)
   - class: Titled
     label: throttle 
     title: Accel Pedal
@@ -59,12 +68,20 @@ widgets:
       - { class: Precision, digits: 5 }
 
   - class: Titled
-    label: speed 
+    label: speed_kph
     title: Speed[km/h]
     input: control_cmd_kph 
     rules:
       - { class: Precision, digits: 2 }
       # - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+
+  # Control_CMD
+  - class: Titled
+    label: speed_mps 
+    title: Speed[m/s]  
+    input: { class: subscription, topic: /control/command/control_cmd, field: longitudinal.speed}
+    rules:
+      - { class: Precision, digits: 2 }
 
   - class: Titled
     label: acceleration 
