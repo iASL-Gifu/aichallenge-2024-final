@@ -50,7 +50,11 @@ widgets:
     input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.accel_cmd}
     rules:
       - { class: Precision, digits: 2 }
-      - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: 0.95, attrs: { back-color: cyan } }
+          - { lt: 0.95, attrs: { back-color: white } }
 
   - class: Titled
     label: brake 
@@ -58,7 +62,11 @@ widgets:
     input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.brake_cmd}
     rules:
       - { class: Precision, digits: 2 }
-      - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: 0.5, attrs: { back-color: yellow } }
+          - { lt: 0.5, attrs: { back-color: white } }
 
   - class: Titled
     label: steering 
@@ -66,6 +74,10 @@ widgets:
     input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.steer_cmd}
     rules:
       - { class: Precision, digits: 5 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
 
   - class: Titled
     label: speed_kph
@@ -73,7 +85,10 @@ widgets:
     input: control_cmd_kph 
     rules:
       - { class: Precision, digits: 2 }
-      # - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
 
   # Control_CMD
   - class: Titled
@@ -82,6 +97,10 @@ widgets:
     input: { class: subscription, topic: /control/command/control_cmd, field: longitudinal.speed}
     rules:
       - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
 
   - class: Titled
     label: acceleration 
@@ -90,6 +109,10 @@ widgets:
     rules:
       - { class: Precision, digits: 2 }
       # - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
 
   - class: Titled
     label: steering_tire_angle 
@@ -97,6 +120,10 @@ widgets:
     input: { class: subscription, topic: /control/command/control_cmd, field: lateral.steering_tire_angle}
     rules:
       - { class: Precision, digits: 5 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
 
   - class: Titled
     label: control-mode
