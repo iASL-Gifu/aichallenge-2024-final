@@ -24,15 +24,11 @@ PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node")
   this->declare_parameter("base_path", std::string("base_path"));
   base_path_ = this->get_parameter("base_path").as_string();
 
-  this->declare_parameter("downsample_rate", 0);
-  downsample_rate_ = this->get_parameter("downsample_rate").as_int();
-
   RCLCPP_INFO(this->get_logger(), "base_path: %s", base_path_.c_str());
-  RCLCPP_INFO(this->get_logger(), "downsample_rate: %d", downsample_rate_);
 
   trajectory_pub_ = this->create_publisher<Trajectory>("/planning/scenario_planning/trajectory", 1);
 
-  load_csv(base_path_, downsample_rate_);
+  load_csv(base_path_);
 
   timer_ = this->create_wall_timer(
     std::chrono::milliseconds(100),
@@ -54,7 +50,7 @@ void PathToTrajectory::handle_trajectory(
   std::shared_ptr<custom_msgs::srv::SetTrajectory::Response> response)
 {
   write_csv(request->csv_path, request->points);
-  load_csv(request->csv_path, downsample_rate_);
+  load_csv(request->csv_path);
   response->success = true;
 }
 
@@ -87,13 +83,12 @@ void PathToTrajectory::write_csv(const std::string &csv_path, const std::vector<
   RCLCPP_INFO(this->get_logger(), "Successfully wrote points to CSV: %s", csv_path.c_str());
 }
 
-void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate)
+void PathToTrajectory::load_csv(std::string csv_path)
 {
   RCLCPP_INFO(this->get_logger(), "--------------- Load CSV %s ---------------", csv_path.c_str());
 
   std::ifstream file(csv_path);
   std::string line;
-  int line_count = 0;
   if (!file.is_open()) {
     RCLCPP_INFO(this->get_logger(), "Failed to open CSV file");
   } else {
@@ -106,13 +101,6 @@ void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate)
 
     while (std::getline(file, line))
     {
-      line_count++;
-      
-      if (line_count % downsample_rate != 0)
-      {
-        continue;
-      }
-
       std::stringstream ss(line);
       std::string x, y, z, x_quat, y_quat, z_quat, w_quat, speed;
       std::getline(ss, x, ',');

@@ -10,11 +10,7 @@ CsvEditor::CsvEditor() : Node("csv_editor")
   this->declare_parameter("base_path", std::string("base_path"));
   base_path_ = this->get_parameter("base_path").as_string();
 
-  this->declare_parameter("downsample_rate", 0);
-  downsample_rate_ = this->get_parameter("downsample_rate").as_int();
-
   RCLCPP_INFO(this->get_logger(), "base_path: %s", base_path_.c_str());
-  RCLCPP_INFO(this->get_logger(), "downsample_rate: %d", downsample_rate_);
 
   set_trajectory_client_ = this->create_client<custom_msgs::srv::SetTrajectory>("/set_trajectory");
 
@@ -26,16 +22,15 @@ CsvEditor::CsvEditor() : Node("csv_editor")
     RCLCPP_INFO(this->get_logger(), "wait for trajectory service to appear...");
   }
 
-  load_csv(base_path_, downsample_rate_);
+  load_csv(base_path_);
 }
 
-void CsvEditor::load_csv(std::string csv_path, int downsample_rate)
+void CsvEditor::load_csv(std::string csv_path)
 {
   RCLCPP_INFO(this->get_logger(), "--------------- Load CSV %s ---------------", csv_path.c_str());
 
   std::ifstream file(csv_path);
   std::string line;
-  int line_count = 0;
   if (!file.is_open()) {
     RCLCPP_INFO(this->get_logger(), "Failed to open CSV file");
   } else {
@@ -44,13 +39,6 @@ void CsvEditor::load_csv(std::string csv_path, int downsample_rate)
 
     while (std::getline(file, line))
     {
-      line_count++;
-      
-      if (line_count % downsample_rate != 0)
-      {
-        continue;
-      }
-
       std::stringstream ss(line);
       std::string x, y, z, x_quat, y_quat, z_quat, w_quat, speed;
       std::getline(ss, x, ',');

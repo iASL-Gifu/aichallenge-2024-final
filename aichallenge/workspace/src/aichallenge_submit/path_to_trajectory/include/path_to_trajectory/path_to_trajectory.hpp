@@ -43,11 +43,10 @@ class PathToTrajectory : public rclcpp::Node {
 
   // Param
   std::string base_path_;
-  int downsample_rate_;
 
   // function
   void write_csv(const std::string &csv_path, const std::vector<TrajectoryPoint> &points);
-  void load_csv(std::string csv_path, int downsample_rate);
+  void load_csv(std::string csv_path);
   void callback()
 ;
   // variable

@@ -25,10 +25,9 @@ class CsvEditor : public rclcpp::Node {
 
     // Param
     std::string base_path_;
-    int downsample_rate_;
 
     // function
-    void load_csv(std::string csv_path, int downsample_rate);
+    void load_csv(std::string csv_path);
 
     // variable
     std::vector<TrajectoryPoint> points_;
