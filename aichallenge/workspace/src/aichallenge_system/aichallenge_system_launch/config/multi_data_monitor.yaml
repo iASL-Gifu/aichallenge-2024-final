@@ -8,28 +8,38 @@ stylesheets:
 
 widgets:
   - class: Matrix
-    cols: 2
+    cols: 3
     items:
-      - posmode
+      - throttle
+      - brake 
+      - steering 
       - control-mode
       - emergency
-      - joy-delay
+      # - joy-delay
+      # - posmode
 
   - class: Titled
-    label: posmode
-    title: Posmode
-    input: { class: subscription, topic: /racing_kart/gnss, field: posmode }
+    label: throttle 
+    title: Accel Pedal
+    input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.accel_cmd}
     rules:
-      class: SetFirstIf
-      type: uint
-      list:
-        - { eq: 45, value: No Data,      attrs: { back-color: red } }
-        - { eq: 78, value: No Fix,       attrs: { back-color: red } }
-        - { eq: 69, value: Estimated,    attrs: { back-color: yellow } }
-        - { eq: 65, value: Autonomous,   attrs: { back-color: yellow } }
-        - { eq: 68, value: Differential, attrs: { back-color: yellow } }
-        - { eq: 70, value: RTK float,    attrs: { back-color: lime } }
-        - { eq: 82, value: RTK fixed,    attrs: { back-color: cyan } }
+      - { class: Precision, digits: 2 }
+      - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+
+  - class: Titled
+    label: brake 
+    title: Brake Pedal 
+    input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.brake_cmd}
+    rules:
+      - { class: Precision, digits: 2 }
+      - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+
+  - class: Titled
+    label: steering 
+    title: Steering Cmd  
+    input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.steer_cmd}
+    rules:
+      - { class: Precision, digits: 5 }
 
   - class: Titled
     label: control-mode
@@ -58,9 +68,25 @@ widgets:
         - { eq: false, value: False,       attrs: { back-color: cyan } }
         - { eq: true, value: True,       attrs: { back-color: red } }
 
-  - class: Titled
-    label: joy-delay
-    title: Joy Delay [sec]
-    input: { class: subscription, topic: /racing_kart/debug/delay, field: data@1}
-    rules:
-      - { class: Precision, digits: 2 }
+  # - class: Titled
+  #   label: joy-delay
+  #   title: Joy Delay [sec]
+  #   input: { class: subscription, topic: /racing_kart/debug/delay, field: data@1}
+  #   rules:
+  #     - { class: Precision, digits: 2 }
+
+  # - class: Titled
+  #   label: posmode
+  #   title: Posmode
+  #   input: { class: subscription, topic: /racing_kart/gnss, field: posmode }
+  #   rules:
+  #     class: SetFirstIf
+  #     type: uint
+  #     list:
+  #       - { eq: 45, value: No Data,      attrs: { back-color: red } }
+  #       - { eq: 78, value: No Fix,       attrs: { back-color: red } }
+  #       - { eq: 69, value: Estimated,    attrs: { back-color: yellow } }
+  #       - { eq: 65, value: Autonomous,   attrs: { back-color: yellow } }
+  #       - { eq: 68, value: Differential, attrs: { back-color: yellow } }
+  #       - { eq: 70, value: RTK float,    attrs: { back-color: lime } }
+  #       - { eq: 82, value: RTK fixed,    attrs: { back-color: cyan } }
