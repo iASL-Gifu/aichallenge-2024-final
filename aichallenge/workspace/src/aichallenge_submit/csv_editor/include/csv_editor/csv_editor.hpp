@@ -10,8 +10,6 @@ class CsvEditor : public rclcpp::Node {
   public:
     using TrajectoryPoint = autoware_auto_planning_msgs::msg::TrajectoryPoint;
 
-    static constexpr size_t MAX_POINTS = 10000;
-
     CsvEditor();
 
   private:
@@ -33,8 +31,7 @@ class CsvEditor : public rclcpp::Node {
     void load_csv(std::string csv_path, int downsample_rate);
 
     // variable
-    std::array<TrajectoryPoint, MAX_POINTS> points_;
-    size_t point_count_;
+    std::vector<TrajectoryPoint> points_;
 };
 
 #endif

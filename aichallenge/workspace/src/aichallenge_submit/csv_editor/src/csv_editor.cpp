@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-CsvEditor::CsvEditor() : Node("csv_editor"), point_count_(0)  // point_count_を初期化
+CsvEditor::CsvEditor() : Node("csv_editor")
 {
   RCLCPP_INFO(this->get_logger(), "================ Csv Editor ==================");
 
@@ -17,6 +17,14 @@ CsvEditor::CsvEditor() : Node("csv_editor"), point_count_(0)  // point_count_を
   RCLCPP_INFO(this->get_logger(), "downsample_rate: %d", downsample_rate_);
 
   set_trajectory_client_ = this->create_client<custom_msgs::srv::SetTrajectory>("/set_trajectory");
+
+  while (!set_trajectory_client_->wait_for_service(std::chrono::seconds(1))) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(this->get_logger(), "path client interrupted while waiting for service to appear.");
+      return;
+    }
+    RCLCPP_INFO(this->get_logger(), "wait for trajectory service to appear...");
+  }
 
   load_csv(base_path_, downsample_rate_);
 }
@@ -43,11 +51,6 @@ void CsvEditor::load_csv(std::string csv_path, int downsample_rate)
         continue;
       }
 
-      if (point_count_ >= MAX_POINTS) {
-        RCLCPP_WARN(this->get_logger(), "Reached maximum number of points (%zu)", MAX_POINTS);
-        break;  // 最大数に達したらループを抜ける
-      }
-
       std::stringstream ss(line);
       std::string x, y, z, x_quat, y_quat, z_quat, w_quat, speed;
       std::getline(ss, x, ',');
@@ -71,13 +74,12 @@ void CsvEditor::load_csv(std::string csv_path, int downsample_rate)
       TrajectoryPoint point;
       point.pose = pose;
       point.longitudinal_velocity_mps = std::stof(speed);
-      points_[point_count_] = point;  // std::arrayに格納
-      point_count_++;  // カウントを増やす
+      points_.push_back(point);
     }
     file.close();
   }
 
-  RCLCPP_INFO(this->get_logger(), "Loaded %zu points", point_count_);
+  RCLCPP_INFO(this->get_logger(), "Loaded %zu points", points_.size());
 
   set_trajectory_request();
 }
@@ -85,14 +87,18 @@ void CsvEditor::load_csv(std::string csv_path, int downsample_rate)
 void CsvEditor::set_trajectory_request() {
   auto request = std::make_shared<custom_msgs::srv::SetTrajectory::Request>();
 
-  // std::arrayをそのまま代入
+  request->csv_path = base_path_;
   request->points = points_;
 
   using ServiceResponseFuture = rclcpp::Client<custom_msgs::srv::SetTrajectory>::SharedFuture;
 
   // レスポンス処理
   auto response_callback = [this](ServiceResponseFuture future) {
-    RCLCPP_INFO(this->get_logger(), "Set Trajectory");
+    if (future.get()->success) {  // success フィールドを確認
+      RCLCPP_INFO(this->get_logger(), "Set Trajectory successfully.");
+    } else {
+      RCLCPP_WARN(this->get_logger(), "Failed to set Trajectory.");
+    }
   };
 
   set_trajectory_client_->async_send_request(request, response_callback);

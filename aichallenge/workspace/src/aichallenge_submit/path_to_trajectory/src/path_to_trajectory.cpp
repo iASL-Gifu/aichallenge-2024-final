@@ -53,22 +53,38 @@ void PathToTrajectory::handle_trajectory(
   const std::shared_ptr<custom_msgs::srv::SetTrajectory::Request> request,
   std::shared_ptr<custom_msgs::srv::SetTrajectory::Response> response)
 {
-  RCLCPP_INFO(this->get_logger(), "Handling trajectory!!!!!!!!!!!!!!!!!!!!!");
+  write_csv(request->csv_path, request->points);
+  load_csv(request->csv_path, downsample_rate_);
+  response->success = true;
+}
 
-  auto start_time = this->now();
-  RCLCPP_INFO(this->get_logger(), "Handling trajectory request at time: %f", start_time.seconds());
-
-  trajectory_ = Trajectory();
-  trajectory_.header.stamp = this->now();
-  trajectory_.header.frame_id = "map";
-
-  trajectory_.points.clear();
-  for (const auto & point : request->points) {
-    trajectory_.points.push_back(point);
+void PathToTrajectory::write_csv(const std::string &csv_path, const std::vector<TrajectoryPoint> &points)
+{
+  std::ofstream file(csv_path);
+  
+  if (!file.is_open()) {
+    RCLCPP_ERROR(this->get_logger(), "Failed to open CSV file for writing: %s", csv_path.c_str());
+    return;
   }
-
-  auto end_time = this->now();
-  RCLCPP_INFO(this->get_logger(), "Finished handling trajectory request at time: %f", end_time.seconds());
+  
+  // ヘッダーを書き込む（必要に応じて変更）
+  file << "x,y,z,x_quat,y_quat,z_quat,w_quat,speed\n";
+  
+  // 各ポイントを書き込む
+  for (const auto &point : points) {
+    const auto &pose = point.pose;
+    file << pose.position.x << ","
+         << pose.position.y << ","
+         << pose.position.z << ","
+         << pose.orientation.x << ","
+         << pose.orientation.y << ","
+         << pose.orientation.z << ","
+         << pose.orientation.w << ","
+         << point.longitudinal_velocity_mps << "\n";
+  }
+  
+  file.close();
+  RCLCPP_INFO(this->get_logger(), "Successfully wrote points to CSV: %s", csv_path.c_str());
 }
 
 void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate)

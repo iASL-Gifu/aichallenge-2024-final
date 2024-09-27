@@ -46,12 +46,14 @@ class PathToTrajectory : public rclcpp::Node {
   int downsample_rate_;
 
   // function
+  void write_csv(const std::string &csv_path, const std::vector<TrajectoryPoint> &points);
   void load_csv(std::string csv_path, int downsample_rate);
   void callback()
 ;
   // variable
   Trajectory trajectory_;
   rclcpp::TimerBase::SharedPtr timer_;
+  bool get_trajectory_;
 };
 
 #endif  // PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_
