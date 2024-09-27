@@ -48,58 +48,14 @@ public:
     odometry_subscriber_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "~/input/odom", 1, std::bind(&SectionTimerNode::odometry_callback, this, std::placeholders::_1));
 
-    // Markerパブリッシャの作成
-    marker_publisher_ = this->create_publisher<visualization_msgs::msg::Marker>("~/output/visualization", 10);
-
     // Float32MultiArrayパブリッシャの作成
     time_publisher_ = this->create_publisher<std_msgs::msg::Float32MultiArray>("~/output/section_times", 10);
-
-    // Start地点のマーカーを可視化
-    publish_start_markers();
 
     // セクションタイム配列を初期化（13要素: 12セクション + 1ラップタイム）
     section_times_.resize(sections_.size() + 1, 0.0);
   }
 
 private:
-  void publish_start_markers()
-  {
-    for (size_t i = 0; i < sections_.size(); ++i) {
-      const auto& start = sections_[i].first;
-
-      // Markerメッセージの設定
-      visualization_msgs::msg::Marker marker;
-      marker.header.frame_id = "map";  // 使用するフレームID
-      marker.header.stamp = this->now();
-      marker.ns = "start_points";
-      marker.id = i;
-      marker.type = visualization_msgs::msg::Marker::SPHERE;  // マーカーの形状
-      marker.action = visualization_msgs::msg::Marker::ADD;
-
-      // 座標の設定
-      marker.pose.position.x = start[0];
-      marker.pose.position.y = start[1];
-      marker.pose.position.z = 43.0;
-      marker.pose.orientation.x = 0.0;
-      marker.pose.orientation.y = 0.0;
-      marker.pose.orientation.z = 0.0;
-      marker.pose.orientation.w = 1.0;
-
-      // スケールの設定
-      marker.scale.x = 4.0;  // 半径1mの球
-      marker.scale.y = 4.0;
-      marker.scale.z = 4.0;
-
-      // 色の設定（緑色）
-      marker.color.r = 1.0;
-      marker.color.g = 0.0;
-      marker.color.b = 0.0;
-      marker.color.a = 1.0;  // アルファ値
-
-      // マーカーのパブリッシュ
-      marker_publisher_->publish(marker);
-    }
-  }
 
   void odometry_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
   {
