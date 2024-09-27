@@ -200,6 +200,7 @@
 
       <!-- Customizable -->
       <node pkg="path_to_trajectory" exec="path_to_trajectory_node" name="path_to_trajectory" output="screen">
+        <param from="$(find-pkg-share path_to_trajectory)/config/params.yaml" />
       </node>
 
     </group>

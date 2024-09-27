@@ -13,6 +13,9 @@
 // limitations under the License.
 
 #include "path_to_trajectory/path_to_trajectory.hpp"
+#include <fstream>
+#include <sstream>
+#include <string>
 
 PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node"), odom_flag_(false)
 {
@@ -32,7 +35,7 @@ PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node"), odom_fla
   RCLCPP_INFO(this->get_logger(), "margin: %d", margin_);
 
   odometry_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-    "localization/kinematic_state", 1,
+    "/localization/kinematic_state", 1,
     std::bind(&PathToTrajectory::odometry_callback, this, std::placeholders::_1));
 
   trajectory_pub_ = this->create_publisher<Trajectory>("/planning/scenario_planning/trajectory", 1);
@@ -40,7 +43,7 @@ PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node"), odom_fla
   load_csv(base_path_, downsample_rate_, base_points_);
 }
 
-void path_point_with_lane_id::odometry_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+void PathToTrajectory::odometry_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
   odometry_ = *msg;
 
   Trajectory trajectory;
@@ -53,10 +56,10 @@ void path_point_with_lane_id::odometry_callback(const nav_msgs::msg::Odometry::S
   int index = 0;
 
   if (!odom_flag_) {
-    for (int i = 0; i < trajectory_point_.size(); i++) {
+    for (int i = 0; i < base_points_.size(); i++) {
       double dist = std::sqrt(
-        std::pow(trajectory_point_[i].position.x - start_x, 2) +
-        std::pow(trajectory_point_[i].position.y - start_y, 2)
+        std::pow(base_points_[i].position.x - start_x, 2) +
+        std::pow(base_points_[i].position.y - start_y, 2)
       );
 
       if (dist < min_dist) {
@@ -65,13 +68,13 @@ void path_point_with_lane_id::odometry_callback(const nav_msgs::msg::Odometry::S
       }
     }
 
-    std::vector<geometry_msgs::msg::msg::Pose> points;
+    std::vector<geometry_msgs::msg::Pose> points;
     for (int i = index; i < base_points_.size(); i++) {
-      points.push_back(base_points[i]);
+      points.push_back(base_points_[i]);
     }
 
     for (int i = 0; i < index; i++) {
-      points.push_back(base_points[i]);
+      points.push_back(base_points_[i]);
     }
 
     odom_flag_ = true;
@@ -81,8 +84,8 @@ void path_point_with_lane_id::odometry_callback(const nav_msgs::msg::Odometry::S
   } else {
     for (int i = 0; i < margin_; i++) {
       double dist = std::sqrt(
-        std::pow(trajectory_point_[i].position.x - start_x, 2) +
-        std::pow(trajectory_point_[i].position.y - start_y, 2)
+        std::pow(base_points_[i].position.x - start_x, 2) +
+        std::pow(base_points_[i].position.y - start_y, 2)
       );
 
       if (dist < min_dist) {
@@ -98,7 +101,7 @@ void path_point_with_lane_id::odometry_callback(const nav_msgs::msg::Odometry::S
     TrajectoryPoint point;
     point.pose = pose;
     point.longitudinal_velocity_mps = 20.0;
-    trajectory.points.append(point);
+    trajectory.points.push_back(point);
   }
 
   trajectory_pub_->publish(trajectory);
@@ -137,13 +140,13 @@ void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate, std::
       std::getline(ss, w_quat, ',');
 
       geometry_msgs::msg::Pose pose;
-      pose.pose.position.x = std::stof(x);
-      pose.pose.position.y = std::stof(y);
-      pose.pose.position.z = 43.1;
-      pose.pose.orientation.x = std::stof(x_quat);
-      pose.pose.orientation.y = std::stof(y_quat);
-      pose.pose.orientation.z = std::stof(z_quat);
-      pose.pose.orientation.w = std::stof(w_quat);
+      pose.position.x = std::stof(x);
+      pose.position.y = std::stof(y);
+      pose.position.z = 43.1;
+      pose.orientation.x = std::stof(x_quat);
+      pose.orientation.y = std::stof(y_quat);
+      pose.orientation.z = std::stof(z_quat);
+      pose.orientation.w = std::stof(w_quat);
 
       point.push_back(pose);
     }

@@ -18,11 +18,11 @@
 #include "autoware_auto_planning_msgs/msg/trajectory.hpp"
 #include "autoware_auto_planning_msgs/msg/trajectory_point.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "geometry_msgs/msg/pose.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 class PathToTrajectory : public rclcpp::Node {
  public:
-  using PathWithLaneId = autoware_auto_planning_msgs::msg::PathWithLaneId;
   using Trajectory = autoware_auto_planning_msgs::msg::Trajectory;
   using TrajectoryPoint = autoware_auto_planning_msgs::msg::TrajectoryPoint;
 
@@ -31,7 +31,7 @@ class PathToTrajectory : public rclcpp::Node {
 
  private:
   // Publisher
-  rclcpp::Publisher<Trajectory>::sharedPtr trajectory_pub_;
+  rclcpp::Publisher<Trajectory>::SharedPtr trajectory_pub_;
 
   // Subscription
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_sub_;
@@ -48,10 +48,10 @@ class PathToTrajectory : public rclcpp::Node {
   int margin_;
 
   // function
-  void load_csv(void load_csv(std::string csv_path, int downsample_rate, std::vector<geometry_msgs::msg::PoseStamped>& point););
+  void load_csv(std::string csv_path, int downsample_rate, std::vector<geometry_msgs::msg::Pose>& point);
 
   // variable
-  std::vector<geometry_msgs::msg::msg::Pose> base_points_;
+  std::vector<geometry_msgs::msg::Pose> base_points_;
   bool odom_flag_;
 
 
