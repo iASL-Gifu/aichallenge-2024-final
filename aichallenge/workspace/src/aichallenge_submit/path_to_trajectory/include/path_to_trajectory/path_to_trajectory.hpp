@@ -26,7 +26,6 @@ class PathToTrajectory : public rclcpp::Node {
   using Trajectory = autoware_auto_planning_msgs::msg::Trajectory;
   using TrajectoryPoint = autoware_auto_planning_msgs::msg::TrajectoryPoint;
 
- public:
   PathToTrajectory();
 
  private:
@@ -53,12 +52,6 @@ class PathToTrajectory : public rclcpp::Node {
   // variable
   Trajectory trajectory_;
   rclcpp::TimerBase::SharedPtr timer_;
-
-
-  int counter_;
-  bool read_csv_;
-  std::string sample_path_;
-
 };
 
 #endif  // PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_

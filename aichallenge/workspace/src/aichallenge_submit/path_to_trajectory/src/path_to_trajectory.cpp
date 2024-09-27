@@ -43,29 +43,21 @@ PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node")
     "/set_trajectory",
     std::bind(&PathToTrajectory::handle_trajectory, this, std::placeholders::_1, std::placeholders::_2)
   );
-
-  counter_ = 0;
-  read_csv_ = false;
-  sample_path_ = "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/raceline.csv";
 }
 
 void PathToTrajectory::callback() {
-  if (counter_ > 300) {
-    if (!read_csv_) {
-      load_csv(sample_path_, 1);
-      read_csv_ = true;
-    }
-  }
-
   trajectory_pub_->publish(trajectory_);
-
-  counter_++;
 }
 
 void PathToTrajectory::handle_trajectory(
   const std::shared_ptr<custom_msgs::srv::SetTrajectory::Request> request,
   std::shared_ptr<custom_msgs::srv::SetTrajectory::Response> response)
 {
+  RCLCPP_INFO(this->get_logger(), "Handling trajectory!!!!!!!!!!!!!!!!!!!!!");
+
+  auto start_time = this->now();
+  RCLCPP_INFO(this->get_logger(), "Handling trajectory request at time: %f", start_time.seconds());
+
   trajectory_ = Trajectory();
   trajectory_.header.stamp = this->now();
   trajectory_.header.frame_id = "map";
@@ -74,6 +66,9 @@ void PathToTrajectory::handle_trajectory(
   for (const auto & point : request->points) {
     trajectory_.points.push_back(point);
   }
+
+  auto end_time = this->now();
+  RCLCPP_INFO(this->get_logger(), "Finished handling trajectory request at time: %f", end_time.seconds());
 }
 
 void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate)
