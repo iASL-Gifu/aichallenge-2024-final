@@ -17,8 +17,8 @@
 // #include "autoware_auto_planning_msgs/msg/path_with_lane_id.hpp"
 #include "autoware_auto_planning_msgs/msg/trajectory.hpp"
 #include "autoware_auto_planning_msgs/msg/trajectory_point.hpp"
-#include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/pose.hpp"
+#include "custom_msgs/srv/set_trajectory.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 class PathToTrajectory : public rclcpp::Node {
@@ -34,31 +34,31 @@ class PathToTrajectory : public rclcpp::Node {
   rclcpp::Publisher<Trajectory>::SharedPtr trajectory_pub_;
 
   // Subscription
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_sub_;
-  void odometry_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
-  nav_msgs::msg::Odometry odometry_;
 
   // Client
 
   // Server
+  rclcpp::Service<custom_msgs::srv::SetTrajectory>::SharedPtr set_trajectory_srv_;
+  void handle_trajectory(const std::shared_ptr<custom_msgs::srv::SetTrajectory::Request> request,
+                        std::shared_ptr<custom_msgs::srv::SetTrajectory::Response> response);
 
   // Param
   std::string base_path_;
   int downsample_rate_;
-  int margin_;
 
   // function
-  void load_csv(std::string csv_path, int downsample_rate, std::vector<geometry_msgs::msg::Pose>& point);
-
+  void load_csv(std::string csv_path, int downsample_rate);
+  void callback()
+;
   // variable
-  std::vector<geometry_msgs::msg::Pose> base_points_;
-  bool odom_flag_;
+  Trajectory trajectory_;
+  rclcpp::TimerBase::SharedPtr timer_;
 
 
+  int counter_;
+  bool read_csv_;
+  std::string sample_path_;
 
-  // void callback(const PathWithLaneId::SharedPtr msg);
-  // rclcpp::Subscription<PathWithLaneId>::SharedPtr sub_;
-  // rclcpp::Publisher<Trajectory>::SharedPtr pub_;
 };
 
 #endif  // PATH_TO_TRAJECTORY__PATH_TO_TRAJECTORY_HPP_

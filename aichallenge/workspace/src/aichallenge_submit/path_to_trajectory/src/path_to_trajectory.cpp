@@ -17,7 +17,7 @@
 #include <sstream>
 #include <string>
 
-PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node"), odom_flag_(false)
+PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node")
 {
   RCLCPP_INFO(this->get_logger(), "================ Path To Trajectory ==================");
 
@@ -27,88 +27,56 @@ PathToTrajectory::PathToTrajectory() : Node("path_to_trajectory_node"), odom_fla
   this->declare_parameter("downsample_rate", 0);
   downsample_rate_ = this->get_parameter("downsample_rate").as_int();
 
-  this->declare_parameter("margin", 10);
-  margin_ = this->get_parameter("margin").as_int();
-
   RCLCPP_INFO(this->get_logger(), "base_path: %s", base_path_.c_str());
   RCLCPP_INFO(this->get_logger(), "downsample_rate: %d", downsample_rate_);
-  RCLCPP_INFO(this->get_logger(), "margin: %d", margin_);
-
-  odometry_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-    "/localization/kinematic_state", 1,
-    std::bind(&PathToTrajectory::odometry_callback, this, std::placeholders::_1));
 
   trajectory_pub_ = this->create_publisher<Trajectory>("/planning/scenario_planning/trajectory", 1);
 
-  load_csv(base_path_, downsample_rate_, base_points_);
+  load_csv(base_path_, downsample_rate_);
+
+  timer_ = this->create_wall_timer(
+    std::chrono::milliseconds(100),
+    std::bind(&PathToTrajectory::callback, this)
+  );
+
+  set_trajectory_srv_ = this->create_service<custom_msgs::srv::SetTrajectory>(
+    "/set_trajectory",
+    std::bind(&PathToTrajectory::handle_trajectory, this, std::placeholders::_1, std::placeholders::_2)
+  );
+
+  counter_ = 0;
+  read_csv_ = false;
+  sample_path_ = "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/raceline.csv";
 }
 
-void PathToTrajectory::odometry_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
-  odometry_ = *msg;
-
-  Trajectory trajectory;
-  trajectory.header.stamp = this->now();
-  trajectory.header.frame_id = "map";
-
-  double start_x = odometry_.pose.pose.position.x;
-  double start_y = odometry_.pose.pose.position.y;
-  double min_dist = std::numeric_limits<double>::infinity();
-  int index = 0;
-
-  if (!odom_flag_) {
-    for (int i = 0; i < base_points_.size(); i++) {
-      double dist = std::sqrt(
-        std::pow(base_points_[i].position.x - start_x, 2) +
-        std::pow(base_points_[i].position.y - start_y, 2)
-      );
-
-      if (dist < min_dist) {
-        min_dist = dist;
-        index = i;
-      }
+void PathToTrajectory::callback() {
+  if (counter_ > 300) {
+    if (!read_csv_) {
+      load_csv(sample_path_, 1);
+      read_csv_ = true;
     }
-
-    std::vector<geometry_msgs::msg::Pose> points;
-    for (int i = index; i < base_points_.size(); i++) {
-      points.push_back(base_points_[i]);
-    }
-
-    for (int i = 0; i < index; i++) {
-      points.push_back(base_points_[i]);
-    }
-
-    odom_flag_ = true;
-
-    base_points_ = std::move(points);
-
-  } else {
-    for (int i = 0; i < margin_; i++) {
-      double dist = std::sqrt(
-        std::pow(base_points_[i].position.x - start_x, 2) +
-        std::pow(base_points_[i].position.y - start_y, 2)
-      );
-
-      if (dist < min_dist) {
-        min_dist = dist;
-        index = i;
-      }
-    }
-
-    base_points_.erase(base_points_.begin(), base_points_.begin() + index);
   }
 
-  for (const auto& pose: base_points_) {
-    TrajectoryPoint point;
-    point.pose = pose;
-    point.longitudinal_velocity_mps = 20.0;
-    trajectory.points.push_back(point);
-  }
+  trajectory_pub_->publish(trajectory_);
 
-  trajectory_pub_->publish(trajectory);
-
+  counter_++;
 }
 
-void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate, std::vector<geometry_msgs::msg::Pose>& point)
+void PathToTrajectory::handle_trajectory(
+  const std::shared_ptr<custom_msgs::srv::SetTrajectory::Request> request,
+  std::shared_ptr<custom_msgs::srv::SetTrajectory::Response> response)
+{
+  trajectory_ = Trajectory();
+  trajectory_.header.stamp = this->now();
+  trajectory_.header.frame_id = "map";
+
+  trajectory_.points.clear();
+  for (const auto & point : request->points) {
+    trajectory_.points.push_back(point);
+  }
+}
+
+void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate)
 {
   RCLCPP_INFO(this->get_logger(), "--------------- Load CSV %s ---------------", csv_path.c_str());
 
@@ -120,6 +88,11 @@ void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate, std::
   } else {
     RCLCPP_INFO(this->get_logger(), "Reading CSV file");
     std::getline(file, line);
+
+    trajectory_ = Trajectory();
+    trajectory_.header.stamp = this->now();
+    trajectory_.header.frame_id = "map";
+
     while (std::getline(file, line))
     {
       line_count++;
@@ -130,7 +103,7 @@ void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate, std::
       }
 
       std::stringstream ss(line);
-      std::string x, y, z, x_quat, y_quat, z_quat, w_quat;
+      std::string x, y, z, x_quat, y_quat, z_quat, w_quat, speed;
       std::getline(ss, x, ',');
       std::getline(ss, y, ',');
       std::getline(ss, z, ',');
@@ -138,6 +111,7 @@ void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate, std::
       std::getline(ss, y_quat, ',');
       std::getline(ss, z_quat, ',');
       std::getline(ss, w_quat, ',');
+      std::getline(ss, speed, ',');
 
       geometry_msgs::msg::Pose pose;
       pose.position.x = std::stof(x);
@@ -148,12 +122,15 @@ void PathToTrajectory::load_csv(std::string csv_path, int downsample_rate, std::
       pose.orientation.z = std::stof(z_quat);
       pose.orientation.w = std::stof(w_quat);
 
-      point.push_back(pose);
+      TrajectoryPoint point;
+      point.pose = pose;
+      point.longitudinal_velocity_mps = std::stof(speed);
+      trajectory_.points.push_back(point);
     }
     file.close();
   }
 
-  RCLCPP_INFO(this->get_logger(), "Loaded %zu points", point.size());
+  RCLCPP_INFO(this->get_logger(), "Loaded %zu points", trajectory_.points.size());
 }
 
 int main(int argc, char const* argv[]) {

@@ -1,5 +1,4 @@
 /**:
   ros__parameters:
     base_path: "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/weaving.csv"
-    downsample_rate: 5
-    margin: 40 # pathのインデックス0からmarginまで探索して現在の点を探し出す
+    downsample_rate: 1
