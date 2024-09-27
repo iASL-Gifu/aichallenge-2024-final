@@ -7,16 +7,33 @@ stylesheets:
 
 
 widgets:
-  - class: Matrix
-    cols: 3
+  - class: Matrix 
+    cols: 1
     items:
-      - throttle
-      - brake 
-      - steering 
-      - control-mode
-      - emergency
-      # - joy-delay
-      # - posmode
+      - class: Simple
+        value: Kart
+        # attrs: { color: magenta }
+
+      - class: Matrix
+        cols: 3
+        items:
+          - throttle
+          - brake 
+          - steering 
+
+      - class: Simple 
+        const: Actuation Cmd
+
+      - class: Matrix
+        cols: 3
+        items:
+          - speed
+          - acceleration
+          - steering_tire_angle
+          - control-mode
+          - emergency
+          # - joy-delay
+          # - posmode
 
   - class: Titled
     label: throttle 
@@ -38,6 +55,29 @@ widgets:
     label: steering 
     title: Steering Cmd  
     input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.steer_cmd}
+    rules:
+      - { class: Precision, digits: 5 }
+
+  - class: Titled
+    label: speed 
+    title: Speed[km/h]
+    input: control_cmd_kph 
+    rules:
+      - { class: Precision, digits: 2 }
+      # - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+
+  - class: Titled
+    label: acceleration 
+    title: Acceleration[m/ss]
+    input: { class: subscription, topic: /control/command/control_cmd, field: longitudinal.acceleration}
+    rules:
+      - { class: Precision, digits: 2 }
+      # - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
+
+  - class: Titled
+    label: steering_tire_angle 
+    title: Steering Cmd  
+    input: { class: subscription, topic: /control/command/control_cmd, field: lateral.steering_tire_angle}
     rules:
       - { class: Precision, digits: 5 }
 
@@ -67,6 +107,13 @@ widgets:
       list:
         - { eq: false, value: False,       attrs: { back-color: cyan } }
         - { eq: true, value: True,       attrs: { back-color: red } }
+
+streams:
+  - { label: control_cmd_mps, class: subscription, topic: /control/command/control_cmd, field: longitudinal.speed }
+  - { label: control_cmd_kph, class: apply, input: control_cmd_mps, rules: f1 }
+
+filters:
+  - { class: Units, label: f1, mode: mps_to_kph }
 
   # - class: Titled
   #   label: joy-delay
