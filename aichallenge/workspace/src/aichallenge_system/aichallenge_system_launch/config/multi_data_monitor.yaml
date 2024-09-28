@@ -114,7 +114,7 @@ widgets:
     title: Long Vel[m/s]
     input: measured_longitudinal_vel_mps 
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
@@ -125,7 +125,7 @@ widgets:
     title: Lat Vel[m/s]
     input: measured_lateral_vel_mps
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
@@ -137,7 +137,7 @@ widgets:
     title: Long Vel[km/h]
     input: measured_longitudinal_vel_kph
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
@@ -148,7 +148,7 @@ widgets:
     title: Lat Vel[km/h]
     input: measured_lateral_vel_kph
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
@@ -170,7 +170,7 @@ widgets:
     title: Steering[deg]  
     input: measured_steering_deg
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
@@ -181,7 +181,7 @@ widgets:
     title: Heading Rate[deg/s]?
     input: measured_heading_rate_deg
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
@@ -218,7 +218,7 @@ widgets:
     title: Steering Cmd[rad]
     input: { class: subscription, topic: /control/command/actuation_cmd, field: actuation.steer_cmd}
     rules:
-      - { class: Precision, digits: 5 }
+      - { class: Precision, digits: 2 }
       - class: SetFirstIf
         type: real
         list:
@@ -264,7 +264,7 @@ widgets:
     title: Steering Cmd[rad]
     input: control_steering_cmd_rad
     rules:
-      - { class: Precision, digits: 5 }
+      - { class: Precision, digits: 2 }
       - class: SetFirstIf
         type: real
         list:
@@ -275,7 +275,7 @@ widgets:
     title: Steering Cmd[deg]  
     input: control_steering_cmd_deg
     rules:
-      - { class: Precision, digits: 5 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
