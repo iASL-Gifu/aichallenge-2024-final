@@ -11,8 +11,20 @@ widgets:
     cols: 1
     items:
       - class: Simple
+        value: Measured
+
+      - class: Matrix
+        cols: 3
+        items:
+          - measured_steering
+          - measured_longitudinal_vel_mps
+          - measured_lateral_vel_mps
+          - measured_heading_rate
+          - measured_longitudinal_vel_kph
+          - measured_lateral_vel_kph
+
+      - class: Simple
         value: Kart
-        # attrs: { color: magenta }
 
       - class: Matrix
         cols: 3
@@ -77,6 +89,74 @@ widgets:
           - emergency
           # - joy-delay
           # - posmode
+
+  # Measured
+  - class: Titled
+    label: measured_steering 
+    title: Steering[rad]  
+    input: { class: subscription, topic: /vehicle/status/steering_status, field: steering_tire_angle}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: measured_longitudinal_vel_mps
+    title: Long Vel[m/s]
+    input: { class: subscription, topic: /vehicle/status/velocity_status, field: longitudinal_velocity}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: measured_lateral_vel_mps
+    title: Lat Vel[m/s]
+    input: { class: subscription, topic: /vehicle/status/velocity_status, field: lateral_velocity}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+
+  - class: Titled
+    label: measured_longitudinal_vel_kph
+    title: Long Vel[km/h]
+    input: measured_longitudinal_vel_kph
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: measured_lateral_vel_kph
+    title: Lat Vel[km/h]
+    input: measured_lateral_vel_kph
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: measured_heading_rate
+    title: Heading Rate
+    input: { class: subscription, topic: /vehicle/status/velocity_status, field: heading_rate}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
 
   # Actuation_CMD(Pedal)
   - class: Titled
@@ -338,6 +418,12 @@ widgets:
 streams:
   - { label: control_cmd_mps, class: subscription, topic: /control/command/control_cmd, field: longitudinal.speed }
   - { label: control_cmd_kph, class: apply, input: control_cmd_mps, rules: f1 }
+  # Measured
+  - { label: measured_longitudinal_vel_mps, class: subscription, topic: /vehicle/status/velocity_status, field: longitudinal_velocity }
+  - { label: measured_lateral_vel_mps, class: subscription, topic: /vehicle/status/velocity_status, field: lateral_velocity }
+  - { label: measured_longitudinal_vel_kph, class: apply, input: measured_longitudinal_vel_mps, rules: f1 }
+  - { label: measured_lateral_vel_kph, class: apply, input: measured_lateral_vel_mps, rules: f1 }
+
 
 filters:
   - { class: Units, label: f1, mode: mps_to_kph }
