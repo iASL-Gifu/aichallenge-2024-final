@@ -229,7 +229,7 @@ widgets:
     title: Speed[km/h]
     input: control_cmd_kph 
     rules:
-      - { class: Precision, digits: 2 }
+      - { class: Precision, digits: 1 }
       - class: SetFirstIf
         type: real
         list:
