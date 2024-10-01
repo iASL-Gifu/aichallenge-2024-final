@@ -36,8 +36,8 @@ void Pose_cov_transformer::on_gnss_pose_cov(const geometry_msgs::msg::PoseWithCo
         tf2::doTransform(*pose_cov, *pose_cov, transform_stamped);
         pose_cov->header.stamp = now();
         pose_cov->header.frame_id = "base_link";
-        pose_cov->pose.pose.position.x += msg->pose.pose.position.x;
-        pose_cov->pose.pose.position.y += msg->pose.pose.position.y;
+        pose_cov->pose.pose.position.x = msg->pose.pose.position.x;
+        pose_cov->pose.pose.position.y = msg->pose.pose.position.y;
         pose_cov->pose.pose.position.z = msg->pose.pose.position.z;
         pose_cov->pose.pose.orientation.x = msg->pose.pose.orientation.x;
         pose_cov->pose.pose.orientation.y = msg->pose.pose.orientation.y;
