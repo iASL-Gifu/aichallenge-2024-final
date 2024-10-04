@@ -23,4 +23,3 @@
 ### Map
 
 ![CCTB Section Map](./docs/CCTB_section_map.jpg)
-
