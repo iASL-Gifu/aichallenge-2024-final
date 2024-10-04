@@ -25,7 +25,7 @@
   </group>
 
   <group if="$(var is_rosbag)">
-    <include file="$(find-pkg-share aichallenge_submit_launch)/launch/rosbag_reference.launch.xml" >
+    <include file="$(find-pkg-share aichallenge_submit_launch)/launch/reference.launch.xml" >
       <arg name="vehicle_model" value="racing_kart"/>
       <arg name="sensor_model" value="$(var sensor_model)"/>
       <arg name="map_path" value="$(find-pkg-share aichallenge_submit_launch)/map"/>
