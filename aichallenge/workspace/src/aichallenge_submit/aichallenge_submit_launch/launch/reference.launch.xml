@@ -7,6 +7,7 @@
   <arg name="vehicle_model" default="racing_kart"  description="vehicle model name"/>
   <arg name="sensor_model" default="racing_kart_sensor_kit" description="sensor model name"/>
   <arg name="simulation" description="used for sensor kit param"/>
+  <arg name="is_rosbag" description="If true, not start controller"/>
   <!-- Optional parameters -->
   <!-- Map -->
   <arg name="lanelet2_map_file" default="lanelet2_map.osm" description="lanelet2 map file name"/>
@@ -210,7 +211,6 @@
 
 
   <!-- Control -->
-  <group unless="$(var is_rosbag)">
     <!-- MPC & PID -->
     <arg name="use_external_target_vel" default="true"/>
     <arg name="external_target_vel" default="5.0"/>
@@ -230,6 +230,7 @@
     <arg name="vehicle_param_file" default="$(find-pkg-share racing_kart_description)/config/vehicle_info.param.yaml"/>
     <arg name="use_sim_time" default="false"/>
 
+  <group unless="$(var is_rosbag)">
     <node pkg="trajectory_follower_node" exec="controller_node_exe" name="controller" output="screen">
       <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory"/>
       <remap from="~/input/current_odometry" to="/localization/kinematic_state"/>
