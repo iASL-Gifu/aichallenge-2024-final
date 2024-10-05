@@ -108,7 +108,7 @@
   </node>
 
   <!-- Planning -->
-  <group>
+  <group unless="$(var is_rosbag)">
     <push-ros-namespace namespace="planning"/>
 
     <!-- scenario_planning -->
