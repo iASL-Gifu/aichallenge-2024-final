@@ -51,16 +51,17 @@ private:
     {
         // 位置の変化を確認
         bool position_change = 
-            std::abs(old_pose->pose.pose.position.x - new_pose->pose.pose.position.x) > 0.01 ||
-            std::abs(old_pose->pose.pose.position.y - new_pose->pose.pose.position.y) > 0.01 ||
-            std::abs(old_pose->pose.pose.position.z - new_pose->pose.pose.position.z) > 0.01;
+            old_pose->pose.pose.position.x != new_pose->pose.pose.position.x ||
+            old_pose->pose.pose.position.y != new_pose->pose.pose.position.y ||
+            old_pose->pose.pose.position.z != new_pose->pose.pose.position.z;
 
         // 向き（四元数）の変化を確認
         bool orientation_change = 
-            std::abs(old_pose->pose.pose.orientation.x - new_pose->pose.pose.orientation.x) > 0.01 ||
-            std::abs(old_pose->pose.pose.orientation.y - new_pose->pose.pose.orientation.y) > 0.01 ||
-            std::abs(old_pose->pose.pose.orientation.z - new_pose->pose.pose.orientation.z) > 0.01 ||
-            std::abs(old_pose->pose.pose.orientation.w - new_pose->pose.pose.orientation.w) > 0.01;
+            old_pose->pose.pose.orientation.x != new_pose->pose.pose.orientation.x ||
+            old_pose->pose.pose.orientation.y != new_pose->pose.pose.orientation.y ||
+            old_pose->pose.pose.orientation.z != new_pose->pose.pose.orientation.z ||
+            old_pose->pose.pose.orientation.w != new_pose->pose.pose.orientation.w;
+
 
         // 位置または向きが変化した場合にイベントをトリガー
         if (position_change || orientation_change) {
