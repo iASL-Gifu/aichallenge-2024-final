@@ -70,7 +70,20 @@ private:
             }
             
             // PoseWithCovarianceStampedメッセージのパブリッシュ
-            publisher_pose_with_cov_->publish(*new_pose);
+            auto new_pose_modify_cov = std::make_shared<geometry_msgs::msg::PoseWithCovarianceStamped>(*new_pose);
+            new_pose_modify_cov->header.stamp = this->now();
+            //Pose Cov
+            new_pose_modify_cov->pose.covariance[0] = new_pose->pose.covariance[0] * 0.1;            
+            new_pose_modify_cov->pose.covariance[7] = new_pose->pose.covariance[7] * 0.1;
+            // Keep Z 0.0
+            // new_pose_modify_cov->pose.covariance[14] = new_pose->pose.covariance[14] / 10.0;
+            // Orientation Cov, nature 0.1 0.1 1.0
+            new_pose_modify_cov->pose.covariance[22] = new_pose->pose.covariance[22] * 10.0;       
+            new_pose_modify_cov->pose.covariance[29] = new_pose->pose.covariance[29] * 10.0;
+            new_pose_modify_cov->pose.covariance[35] = new_pose->pose.covariance[35] * 10.0;
+
+
+            publisher_pose_with_cov_->publish(*new_pose_modify_cov);
             
             // Poseメッセージのパブリッシュ
             auto pose_msg = std::make_shared<geometry_msgs::msg::PoseStamped>();
