@@ -1,6 +1,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
-#include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 #include <deque>
 
 class PoseComparisonNode : public rclcpp::Node
@@ -21,7 +21,7 @@ public:
         publisher_pose_with_cov_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>("~/output/pose_with_covariance", 10);
         
         // Poseメッセージ用のパブリッシャー
-        publisher_pose_ = this->create_publisher<geometry_msgs::msg::Pose>("~/output/pose", 10);
+        publisher_pose_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("~/output/pose", 10);
     }
 
 private:
@@ -30,7 +30,7 @@ private:
     bool debug_;  // デバッグフラグ
 
     rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr publisher_pose_with_cov_;
-    rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr publisher_pose_;
+    rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr publisher_pose_;
 
     void pose_callback(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
     {
@@ -73,8 +73,10 @@ private:
             publisher_pose_with_cov_->publish(*new_pose);
             
             // Poseメッセージのパブリッシュ
-            geometry_msgs::msg::Pose pose_msg = new_pose->pose.pose;
-            publisher_pose_->publish(pose_msg);
+            auto pose_msg = std::make_shared<geometry_msgs::msg::PoseStamped>();
+            pose_msg->header = new_pose->header;
+            pose_msg->pose = new_pose->pose.pose;
+            publisher_pose_->publish(*pose_msg);
         } else {
             if (debug_) {
                 RCLCPP_INFO(this->get_logger(), "Pose not changed!");
