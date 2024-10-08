@@ -69,9 +69,12 @@
       <arg name="output_twist_with_covariance_raw_topic" value="/localization/twist_estimator/twist_with_covariance_raw"/>
     </include>
 
+    <!-- Imu Gnss Poser -->
     <node pkg="imu_gnss_poser" exec="imu_gnss_poser_node" name="imu_gnss_poser" output="screen">
       <remap from="/sensing/gnss/pose_with_covariance" to="/sensing/gnss/gps_module/pose_with_covariance"/>
       <param from="$(find-pkg-share imu_gnss_poser)/config/imu_gnss_poser.param.yaml"/>
+       <!-- Use true when AWSIM(Simulator) is used -->
+      <param name="specific_covariance" value="$(var simulation)"/>
     </node>
 
     <include file="$(find-pkg-share ekf_localizer)/launch/ekf_localizer.launch.xml">
