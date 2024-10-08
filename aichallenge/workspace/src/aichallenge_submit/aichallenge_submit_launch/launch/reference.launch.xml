@@ -70,7 +70,7 @@
     </include>
 
     <node pkg="imu_gnss_poser" exec="imu_gnss_poser_node" name="imu_gnss_poser" output="screen">
-        <remap from="/sensing/gnss/pose_with_covariance" to="/sensing/gnss/gps_module/pose_with_covariance"/>
+      <remap from="/sensing/gnss/pose_with_covariance" to="/sensing/gnss/gps_module/pose_with_covariance"/>
       <param from="$(find-pkg-share imu_gnss_poser)/config/imu_gnss_poser.param.yaml"/>
     </node>
 
