@@ -249,8 +249,8 @@
 
   <!-- Pose Cov Transformer Node -->
   <node pkg="pose_transformer" exec="pose_transformer" name="pose_transformer" output="screen">
-    <!-- True Only interface ROSBAG -->
-    <param name="publish_gnss_pose_original" value="false"/>
+    <!-- To-do, tomoki Only for interfacebag -->
+    <param name="publish_gnss_pose_original" value="$(var is_rosbag)"/>
   </node>
   <!-- Acc  culculator Node -->
   <node pkg="vehicle_state_culculator" exec="vehicle_state_culculator_node" name="vehicle_state_culculator_node" output="screen"/>
