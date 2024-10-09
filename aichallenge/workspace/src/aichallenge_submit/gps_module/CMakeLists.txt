@@ -17,6 +17,5 @@ ament_auto_add_executable(true_gps_module
 ament_auto_package(
   INSTALL_TO_SHARE
   config
-  csv
   launch
 )
