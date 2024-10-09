@@ -421,7 +421,7 @@ widgets:
     title: Sec12_dif
     input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@11}
     rules:
-      - { class: Precision, digits: 4 }
+      - { class: Precision, digits: 2 }
       - class: SetFirstIf
         type: real
         list:
@@ -432,7 +432,7 @@ widgets:
     title: rap_time_dif
     input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@12}
     rules:
-      - { class: Precision, digits: 4 }
+      - { class: Precision, digits: 2 }
       - class: SetFirstIf
         type: real
         list:
