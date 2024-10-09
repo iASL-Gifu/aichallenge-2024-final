@@ -32,6 +32,36 @@ widgets:
           - rap_time
 
       - class: Simple
+        value: Timer_Dif
+
+      - class: Matrix
+        cols: 5
+        items:
+          - section_1_dif
+          - section_2_dif
+          - section_3_dif
+          - section_4_dif
+          - section_5_dif
+          - section_6_dif
+          - section_7_dif
+          - section_8_dif
+          - section_9_dif
+          - section_10_dif
+          - section_11_dif
+          - section_12_dif
+          - rap_time_dif
+
+      - class: Simple
+        value: Sensor Data Covariance
+
+      - class: Matrix
+        cols: 5
+        items:
+          - gnss_pos_cov
+          - fused_gyro_linear_vel_x_cov
+          - fused_gyro_ang_vel_cov
+
+      - class: Simple
         value: Measured
 
       - class: Matrix
@@ -45,8 +75,8 @@ widgets:
           - measured_longitudinal_vel_mps
           - measured_heading_rate_rad
 
-          - measured_lateral_vel_mps
-          - measured_lateral_vel_kph
+          # - measured_lateral_vel_mps
+          # - measured_lateral_vel_kph
           - measured_acceleration
           - measured_steering_velocity
 
@@ -264,6 +294,186 @@ widgets:
         list:
           - { ge: -1000.0, attrs: { back-color: white } }
 
+          
+  - class: Titled
+    label: section_1_dif
+    title: Sec01_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@0}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_2_dif
+    title: Sec02_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@1}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_3_dif
+    title: Sec03_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@2}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_4_dif
+    title: Sec04_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@3}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_5_dif
+    title: Sec05_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@4}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_6_dif
+    title: Sec06_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@5}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_7_dif
+    title: Sec07_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@6}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_8_dif
+    title: Sec08_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@7}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_9_dif
+    title: Sec09_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@8}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_10_dif
+    title: Sec10_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@9}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_11_dif
+    title: Sec11_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@10}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: section_12_dif
+    title: Sec12_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@11}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  - class: Titled
+    label: rap_time_dif
+    title: rap_time_dif
+    input: { class: subscription, topic: /section/section_timer_difference_from_best, field: data@12}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
+  # Sesor Data
+  # Measured
+  - class: Titled
+    label: gnss_pos_cov
+    title: GNSS Pos Cov  
+    input: { class: subscription, topic: /sensing/gnss/pose_with_covariance, field: pose.covariance@0}
+    rules:
+      - { class: Precision, digits: 0 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: 200.0, attrs: { back-color: red } }
+          - { ge: -1000.0, attrs: { back-color: white } }
+  
+  - class: Titled
+    label: fused_gyro_linear_vel_x_cov
+    title: Fused Gyro LinVel X
+    input: { class: subscription, topic: /localization/twist_estimator/twist_with_covariance, field: twist.covariance@0}
+    rules:
+      - { class: Precision, digits: 2 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+ 
+  - class: Titled
+    label: fused_gyro_ang_vel_cov
+    title: Fused Gyro AngVel
+    input: { class: subscription, topic: /localization/twist_estimator/twist_with_covariance, field: twist.covariance@21}
+    rules:
+      - { class: Precision, digits: 5 }
+      - class: SetFirstIf
+        type: real
+        list:
+          - { ge: -1000.0, attrs: { back-color: white } }
+
   # Measured
   - class: Titled
     label: measured_steering_rad
@@ -287,16 +497,16 @@ widgets:
         list:
           - { ge: -1000.0, attrs: { back-color: white } }
 
-  - class: Titled
-    label: measured_lateral_vel_mps
-    title: Lat Vel[m/s]
-    input: measured_lateral_vel_mps
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
+  # - class: Titled
+  #   label: measured_lateral_vel_mps
+  #   title: Lat Vel[m/s]
+  #   input: measured_lateral_vel_mps
+  #   rules:
+  #     - { class: Precision, digits: 1 }
+  #     - class: SetFirstIf
+  #       type: real
+  #       list:
+  #         - { ge: -1000.0, attrs: { back-color: white } }
 
 
   - class: Titled
@@ -310,16 +520,16 @@ widgets:
         list:
           - { ge: -1000.0, attrs: { back-color: white } }
 
-  - class: Titled
-    label: measured_lateral_vel_kph
-    title: Lat Vel[km/h]
-    input: measured_lateral_vel_kph
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
+  # - class: Titled
+  #   label: measured_lateral_vel_kph
+  #   title: Lat Vel[km/h]
+  #   input: measured_lateral_vel_kph
+  #   rules:
+  #     - { class: Precision, digits: 1 }
+  #     - class: SetFirstIf
+  #       type: real
+  #       list:
+  #         - { ge: -1000.0, attrs: { back-color: white } }
 
   - class: Titled
     label: measured_heading_rate_rad
