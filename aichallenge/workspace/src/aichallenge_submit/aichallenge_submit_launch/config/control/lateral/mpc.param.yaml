@@ -18,7 +18,7 @@
 
     # -- mpc optimization --
     mpc_s_qp_solver_type: "osqp" # optimization solver option (unconstraint_fast or osqp)
-    mpc_prediction_horizon: 30 # 計算量と精度のトレードオフ　低いと目の前のパスのことしか考えられない
+    mpc_d_prediction_horizon: 30 # 計算量と精度のトレードオフ　低いと目の前のパスのことしか考えられない
     mpc_d_prediction_dt: 0.1 # 予測のタイムステップ　小さくするとより良い解像度で推論ができるが、推論距離は小さくなる
     mpc_d_weight_lat_error: 0.1 # default 0.1 memo 0.5 値を大きくしたほうがより追従しようとする。
     mpc_d_weight_heading_error: 0.0 # default 0.0 影響力　小　
