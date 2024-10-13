@@ -13,16 +13,8 @@ ros2 bag filter -o rosbag2_filtered/ rosbag2_merged/ -i "/control/command/actuat
 https://github.com/tier4/ros2bag_extensions
 
 ### Interface Topics
-/control/command/actuation_cmd
-/control/command/control_cmd
-/sensing/gnss/pose_with_covariance
-/sensing/gnss/pose
-/sensing/imu/imu_raw
-/vehicle/status/actuation_status
-/vehicle/status/control_mode
-/vehicle/status/gear_status
-/vehicle/status/steering_status
-/vehicle/status/velocity_status
+ros2 bag play ROSBAG --topics
+/control/command/actuation_cmd /control/command/control_cmd /sensing/gnss/pose_with_covariance /sensing/gnss/pose /sensing/imu/imu_raw /vehicle/status/actuation_status /vehicle/status/control_mode /vehicle/status/gear_status /vehicle/status/steering_status /vehicle/status/velocity_status
 ## Toolの使用方法
 **WIP**
 
