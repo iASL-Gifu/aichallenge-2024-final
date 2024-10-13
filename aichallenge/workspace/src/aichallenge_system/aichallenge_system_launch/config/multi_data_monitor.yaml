@@ -63,7 +63,7 @@ widgets:
           - odom_ang_cov_z
 
       - class: Simple
-        value: EKF Input Cov
+        value: EKF Input Covariance
 
       - class: Matrix
         cols: 5
