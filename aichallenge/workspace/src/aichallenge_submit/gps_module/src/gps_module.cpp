@@ -148,8 +148,7 @@ void PoseComparisonNode::compare_poses(
         // Set Pose Cov
         new_pose_modify_cov->pose.covariance[0] = new_pose->pose.covariance[0] * scale_pos_cov_x_;            
         new_pose_modify_cov->pose.covariance[7] = new_pose->pose.covariance[7] * scale_pos_cov_y_;
-        // Keep Z 0.0
-        // new_pose_modify_cov->pose.covariance[14] = new_pose->pose.covariance[14] * scale_pos_cov_z_;
+        new_pose_modify_cov->pose.covariance[14] = new_pose->pose.covariance[14] * scale_pos_cov_z_;
         // Orientation Cov, nature 0.1 0.1 1.0
         new_pose_modify_cov->pose.covariance[21] = new_pose->pose.covariance[21] * scale_ori_cov_0_;       
         new_pose_modify_cov->pose.covariance[28] = new_pose->pose.covariance[28] * scale_ori_cov_1_;
