@@ -17,4 +17,4 @@
     margin: 30
 
     # original(set fixed-cov), csv, diff, only_csv, pass_through
-    mode: "original"
+    mode: "pass_through"
