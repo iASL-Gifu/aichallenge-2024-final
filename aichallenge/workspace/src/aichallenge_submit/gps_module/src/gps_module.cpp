@@ -43,16 +43,25 @@ PoseComparisonNode::PoseComparisonNode() : Node("pose_comparison_node")
 void PoseComparisonNode::pose_callback(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
 {
     // モードがoriginalの場合はPoseWithCovarianceStampedをそのままPublish
-    if (mode_ == "original")
+    if (mode_ == "original"|| mode_ == "pass_through")
     {
         auto pose_cov_msg = std::make_shared<geometry_msgs::msg::PoseWithCovarianceStamped>(*msg);
-        pose_cov_msg->pose.covariance[0] = msg->pose.covariance[0] * scale_pos_cov_x_;
-        pose_cov_msg->pose.covariance[7] = msg->pose.covariance[7] * scale_pos_cov_y_;
-        pose_cov_msg->pose.covariance[14] = msg->pose.covariance[14] * scale_pos_cov_z_;
-        pose_cov_msg->pose.covariance[21] = msg->pose.covariance[21] * scale_ori_cov_0_;
-        pose_cov_msg->pose.covariance[28] = msg->pose.covariance[28] * scale_ori_cov_1_;
-        pose_cov_msg->pose.covariance[35] = msg->pose.covariance[35] * scale_ori_cov_2_;
-
+        if (mode_ == "pass_through"){
+            pose_cov_msg->pose.covariance[0] = msg->pose.covariance[0] * scale_pos_cov_x_;
+            pose_cov_msg->pose.covariance[7] = msg->pose.covariance[7] * scale_pos_cov_y_;
+            pose_cov_msg->pose.covariance[14] = msg->pose.covariance[14] * scale_pos_cov_z_;
+            pose_cov_msg->pose.covariance[21] = msg->pose.covariance[21] * scale_ori_cov_0_;
+            pose_cov_msg->pose.covariance[28] = msg->pose.covariance[28] * scale_ori_cov_1_;
+            pose_cov_msg->pose.covariance[35] = msg->pose.covariance[35] * scale_ori_cov_2_;
+        }
+        else if(mode_ == "original"){
+            pose_cov_msg->pose.covariance[0] = 0.1;
+            pose_cov_msg->pose.covariance[7] = 0.1;
+            pose_cov_msg->pose.covariance[14] = 0.1;
+            pose_cov_msg->pose.covariance[21] = 100000.0;
+            pose_cov_msg->pose.covariance[28] = 100000.0;
+            pose_cov_msg->pose.covariance[35] = 100000.0;
+        }
         publisher_pose_with_cov_->publish(*pose_cov_msg);
         publish_pose(pose_cov_msg);
         return;

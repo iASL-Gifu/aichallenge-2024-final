@@ -2,7 +2,7 @@
   ros__parameters:
     debug: false
 
-    # Enable all mode
+    # Enable all mode exclude original
     scale_position_covariance_x: 1.0
     scale_position_covariance_y: 1.0
     # Not used 
@@ -16,5 +16,5 @@
     look_ahead_index: 10
     margin: 30
 
-    # original, csv, diff, only_csv
+    # original(set fixed-cov), csv, diff, only_csv, pass_through
     mode: "original"
