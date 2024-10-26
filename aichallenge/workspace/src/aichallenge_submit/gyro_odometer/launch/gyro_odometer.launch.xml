@@ -14,6 +14,7 @@
   <arg name="scale_gyro_ang_vel_x" default="1.0" description="scale factor for gyro angular velocity x"/>
   <arg name="scale_gyro_ang_vel_y" default="1.0" description="scale factor for gyro angular velocity y"/>
   <arg name="scale_gyro_ang_vel_z" default="1.0" description="scale factor for gyro angular velocity z"/>
+  <arg name="scale_vehicle_vel_x" default="1.0" description="scale factor for vehicle velocity x"/>
 
   <node pkg="gyro_odometer" exec="gyro_odometer" name="gyro_odometer" output="screen">
     <remap from="vehicle/twist_with_covariance" to="$(var input_vehicle_twist_with_covariance_topic)"/>
@@ -31,5 +32,6 @@
     <param name="scale_gyro_ang_vel_x" value="$(var scale_gyro_ang_vel_x)"/>
     <param name="scale_gyro_ang_vel_y" value="$(var scale_gyro_ang_vel_y)"/>
     <param name="scale_gyro_ang_vel_z" value="$(var scale_gyro_ang_vel_z)"/>
+    <param name="scale_vehicle_vel_x" value="$(var scale_vehicle_vel_x)"/>
   </node>
 </launch>
