@@ -5,7 +5,6 @@
     # Enable all mode exclude original
     scale_position_covariance_x: 0.001
     scale_position_covariance_y: 0.001
-    # Not used 
     scale_position_covariance_z: 1.0
     # upstream cov_value: 0.1, 0.1, 1.0
     scale_orientation_covariance_0: 1000000.0
