@@ -16,7 +16,6 @@ RUN apt install arp-scan -y
 
 # PATH="$PATH:/root/.local/bin"
 # PATH="/usr/local/cuda/bin:$PATH"
-COPY --chmod=777 /trajectory_editor/ /editor/
 ENV PATH="/editor/cmd_line/:$PATH"
 ENV XDG_RUNTIME_DIR=/tmp/xdg
 ENV ROS_LOCALHOST_ONLY=0
