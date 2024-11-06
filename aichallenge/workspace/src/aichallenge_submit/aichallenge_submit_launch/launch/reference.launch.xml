@@ -8,6 +8,7 @@
   <arg name="sensor_model" default="racing_kart_sensor_kit" description="sensor model name"/>
   <arg name="simulation" description="used for sensor kit param"/>
   <arg name="is_rosbag" description="If true, not start controller"/>
+  <arg name="is_pp" default="true" description="true: pure pursuit. false: mpc and pid"/>
   <!-- Optional parameters -->
   <!-- Map -->
   <arg name="lanelet2_map_file" default="lanelet2_map.osm" description="lanelet2 map file name"/>
@@ -171,11 +172,12 @@
 
   <!-- Control -->
     <!-- Pure Pursuit -->
-    <!-- <let name="steering_tire_angle_gain_var" value="1.0" if="$(var simulation)"/>
+  <group if="$(var is_pp)">
+    <let name="steering_tire_angle_gain_var" value="1.0" if="$(var simulation)"/>
     <let name="steering_tire_angle_gain_var" value="1.639" unless="$(var simulation)"/>
 
     <node pkg="simple_pure_pursuit" exec="simple_pure_pursuit" name="simple_pure_pursuit_node" output="screen">
-      <param name="use_external_target_vel" value="true"/>
+      <param name="use_external_target_vel" value="false"/>
       <param name="external_target_vel" value="8.3"/>
       <param name="lookahead_gain" value="0.5"/>
       <param name="lookahead_min_distance" value="2.5"/>
@@ -185,9 +187,11 @@
       <remap from="input/kinematics" to="/localization/kinematic_state"/>
       <remap from="input/trajectory" to="/planning/scenario_planning/trajectory"/>
       <remap from="output/control_cmd" to="/control/command/control_cmd"/>
-    </node> -->
+    </node>
+  </group>
 
     <!-- MPC & PID -->
+  <group unless="$(var is_pp)">
     <arg name="use_external_target_vel" default="true"/>
     <arg name="external_target_vel" default="5.0"/>
     <arg name="lateral_deviation" default="0.0"/>
@@ -206,30 +210,31 @@
     <arg name="vehicle_param_file" default="$(find-pkg-share racing_kart_description)/config/vehicle_info.param.yaml"/>
     <arg name="use_sim_time" default="false"/>
 
-  <group unless="$(var is_rosbag)">
-    <node pkg="trajectory_follower_node" exec="controller_node_exe" name="controller" output="screen">
-      <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory"/>
-      <remap from="~/input/current_odometry" to="/localization/kinematic_state"/>
-      <remap from="~/input/current_steering" to="/vehicle/status/steering_status"/>
-      <remap from="~/input/current_accel" to="/localization/acceleration"/>
-      <remap from="~/input/current_operation_mode" to="/system/operation_mode/state"/>
-      <remap from="~/output/predicted_trajectory" to="lateral/predicted_trajectory"/>
-      <remap from="~/output/lateral_diagnostic" to="lateral/diagnostic"/>
-      <remap from="~/output/slope_angle" to="longitudinal/slope_angle"/>
-      <remap from="~/output/longitudinal_diagnostic" to="longitudinal/diagnostic"/>
-      <remap from="~/output/stop_reason" to="longitudinal/stop_reason"/>
-      <remap from="~/output/control_cmd" to="/control/command/control_cmd"/>
-      <param name="lateral_controller_mode" value="$(var lateral_controller_mode)"/>
-      <param name="longitudinal_controller_mode" value="$(var longitudinal_controller_mode)"/>
-      <param from="$(var nearest_search_param_path)"/>
-      <param from="$(var trajectory_follower_node_param_path)"/>
-      <param from="$(var lon_controller_param_path)"/>
-      <param from="$(var lat_controller_param_path)"/>
-      <param from="$(var vehicle_param_file)"/>
-      <remap from="input/kinematics" to="/localization/kinematic_state"/>
-      <remap from="input/trajectory" to="/planning/scenario_planning/trajectory"/>
-      <remap from="output/control_cmd" to="/control/command/control_cmd"/>    
-    </node>
+    <group unless="$(var is_rosbag)">
+      <node pkg="trajectory_follower_node" exec="controller_node_exe" name="controller" output="screen">
+        <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory"/>
+        <remap from="~/input/current_odometry" to="/localization/kinematic_state"/>
+        <remap from="~/input/current_steering" to="/vehicle/status/steering_status"/>
+        <remap from="~/input/current_accel" to="/localization/acceleration"/>
+        <remap from="~/input/current_operation_mode" to="/system/operation_mode/state"/>
+        <remap from="~/output/predicted_trajectory" to="lateral/predicted_trajectory"/>
+        <remap from="~/output/lateral_diagnostic" to="lateral/diagnostic"/>
+        <remap from="~/output/slope_angle" to="longitudinal/slope_angle"/>
+        <remap from="~/output/longitudinal_diagnostic" to="longitudinal/diagnostic"/>
+        <remap from="~/output/stop_reason" to="longitudinal/stop_reason"/>
+        <remap from="~/output/control_cmd" to="/control/command/control_cmd"/>
+        <param name="lateral_controller_mode" value="$(var lateral_controller_mode)"/>
+        <param name="longitudinal_controller_mode" value="$(var longitudinal_controller_mode)"/>
+        <param from="$(var nearest_search_param_path)"/>
+        <param from="$(var trajectory_follower_node_param_path)"/>
+        <param from="$(var lon_controller_param_path)"/>
+        <param from="$(var lat_controller_param_path)"/>
+        <param from="$(var vehicle_param_file)"/>
+        <remap from="input/kinematics" to="/localization/kinematic_state"/>
+        <remap from="input/trajectory" to="/planning/scenario_planning/trajectory"/>
+        <remap from="output/control_cmd" to="/control/command/control_cmd"/>    
+      </node>
+    </group>
   </group>
 
   <!-- Map -->
