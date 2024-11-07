@@ -3,8 +3,8 @@
     pid_d_delay_compensation_time: 0.17
 
     pid_s_enable_smooth_stop: true
-    pid_s_enable_overshoot_emergency: false
-    pid_s_enable_large_tracking_error_emergency: false
+    pid_s_enable_overshoot_emergency: true 
+    pid_s_enable_large_tracking_error_emergency: true 
     pid_s_enable_slope_compensation: false
     pid_s_enable_keep_stopped_until_steer_convergence: true
 
