@@ -2,7 +2,7 @@
 FROM ghcr.io/automotiveaichallenge/autoware-universe:humble-latest AS common
 
 RUN echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | tee -a /etc/apt/sources.list > /dev/null && apt-get update
-RUN apt-get -y install terminator
+RUN apt update && apt-get -y install terminator
 RUN apt-get -y install libgl1-mesa-glx libgl1-mesa-dri
 RUN apt-get -y install iproute2
 RUN apt-get -y install wmctrl
