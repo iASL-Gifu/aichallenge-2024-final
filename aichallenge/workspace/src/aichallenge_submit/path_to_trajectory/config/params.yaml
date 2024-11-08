@@ -1,4 +1,4 @@
 /**:
   ros__parameters:
-    base_path: "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/raceline_base_15km.csv"
-    #base_path: "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/raceline_awsim_30km.csv"
+    base_path: "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/centerline_15km.csv"
+    # base_path: "/aichallenge/workspace/src/aichallenge_submit/path_to_trajectory/csv/raceline_awsim_15km_pp.csv"
