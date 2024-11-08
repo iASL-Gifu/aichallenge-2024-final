@@ -82,9 +82,6 @@ widgets:
       - class: Matrix
         cols: 3
         items:
-          - speed_kph
-          - acceleration
-          - control_steering_tire_angle_rad
           - speed_mps
           - control_steering_tire_angle_deg
 
@@ -375,16 +372,6 @@ widgets:
         list:
           - { ge: -1000.0, attrs: { back-color: white } }
 
-  - class: Titled
-    label: speed_kph
-    title: Speed[km/h]
-    input: control_cmd_kph 
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
 
   # Control_CMD
   - class: Titled
@@ -398,28 +385,7 @@ widgets:
         list:
           - { ge: -1000.0, attrs: { back-color: white } }
 
-  - class: Titled
-    label: acceleration 
-    title: Acceleration[m/ss]
-    input: { class: subscription, topic: /control/command/control_cmd, field: longitudinal.acceleration}
-    rules:
-      - { class: Precision, digits: 2 }
-      # - { class: SetIf, type: real, ge: 0.95, attrs: { back-color: cyan }  }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
 
-  - class: Titled
-    label: control_steering_tire_angle_rad
-    title: Steering Cmd[rad]
-    input: control_steering_cmd_rad
-    rules:
-      - { class: Precision, digits: 2 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
 
   - class: Titled
     label: control_steering_tire_angle_deg 
