@@ -89,16 +89,6 @@ widgets:
           - control_steering_tire_angle_deg
 
 
-      # - class: Simple 
-      #   const: Others
-
-      # - class: Matrix
-      #   cols: 3
-      #   items:
-          # - control-mode
-          # - emergency
-          # - joy-delay
-          # - posmode
 
   # Condition https://github.com/tier4/multi_data_monitor/blob/main/multi_data_monitor/documents/classes/others/conditions.md
   # Sesor Data
