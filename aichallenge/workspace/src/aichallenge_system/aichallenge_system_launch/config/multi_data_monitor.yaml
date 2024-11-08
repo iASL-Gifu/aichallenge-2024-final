@@ -79,11 +79,6 @@ widgets:
       - class: Simple 
         const: Control Cmd
 
-      - class: Matrix
-        cols: 3
-        items:
-          - speed_mps
-          - control_steering_tire_angle_deg
 
 
 
@@ -373,30 +368,6 @@ widgets:
           - { ge: -1000.0, attrs: { back-color: white } }
 
 
-  # Control_CMD
-  - class: Titled
-    label: speed_mps 
-    title: Speed[m/s]  
-    input: { class: subscription, topic: /control/command/control_cmd, field: longitudinal.speed}
-    rules:
-      - { class: Precision, digits: 2 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-
-
-  - class: Titled
-    label: control_steering_tire_angle_deg 
-    title: Steering Cmd[deg]  
-    input: control_steering_cmd_deg
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
 
 
 
@@ -415,9 +386,6 @@ streams:
   - { label: measured_heading_rate_rad, class: subscription, topic: /vehicle/status/velocity_status, field: heading_rate }
   - { label: measured_steering_deg, class: apply, input: measured_steering_rad, rules: f2 }
   - { label: measured_heading_rate_deg, class: apply, input: measured_heading_rate_rad, rules: f2 }
-  # Control_CMD
-  - { label: control_steering_cmd_rad, class: subscription, topic: /control/command/control_cmd, field: lateral.steering_tire_angle }
-  - { label: control_steering_cmd_deg, class: apply, input: control_steering_cmd_rad, rules: f2 }
 
 
 
