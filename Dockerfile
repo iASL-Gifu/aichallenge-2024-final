@@ -2,7 +2,7 @@
 FROM ghcr.io/automotiveaichallenge/autoware-universe:humble-latest AS common
 
 RUN echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | tee -a /etc/apt/sources.list > /dev/null && apt-get update
-RUN apt-get -y install terminator
+RUN apt update && apt-get -y install terminator
 RUN apt-get -y install libgl1-mesa-glx libgl1-mesa-dri
 RUN apt-get -y install iproute2
 RUN apt-get -y install wmctrl
@@ -13,6 +13,9 @@ RUN apt-get -y install ros-humble-rosbag2-storage-mcap
 
 RUN apt install zenoh-bridge-ros2dds terminator -y
 RUN apt install arp-scan -y
+
+COPY --chmod=757 remote /remote 
+COPY --chmod=757 vehicle /vehicle
 
 # PATH="$PATH:/root/.local/bin"
 # PATH="/usr/local/cuda/bin:$PATH"
