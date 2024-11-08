@@ -47,26 +47,6 @@ widgets:
           - ekf_output_ori_z
 
       - class: Simple
-        value: Measured
-
-      - class: Matrix
-        cols: 6
-        items:
-          - measured_steering_deg
-          - measured_longitudinal_vel_kph
-          - measured_heading_rate_deg
-
-          - measured_steering_rad
-          - measured_longitudinal_vel_mps
-          - measured_heading_rate_rad
-
-          # - measured_lateral_vel_mps
-          # - measured_lateral_vel_kph
-          - measured_acceleration
-          - measured_steering_velocity
-
-
-      - class: Simple
         value: Actuation Cmd (Kart)
 
       - class: Matrix
@@ -75,12 +55,6 @@ widgets:
           - throttle
           - brake 
           - steering 
-
-      - class: Simple 
-        const: Control Cmd
-
-
-
 
   # Condition https://github.com/tier4/multi_data_monitor/blob/main/multi_data_monitor/documents/classes/others/conditions.md
   # Sesor Data
@@ -238,98 +212,6 @@ widgets:
         type: real
         list:
           - { ge: -1000.0, attrs: { back-color: white } }
-  # Measured
-  - class: Titled
-    label: measured_steering_rad
-    title: Steering[rad]  
-    input: { class: subscription, topic: /vehicle/status/steering_status, field: steering_tire_angle}
-    rules:
-      - { class: Precision, digits: 2 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-  - class: Titled
-    label: measured_longitudinal_vel_mps
-    title: Long Vel[m/s]
-    input: measured_longitudinal_vel_mps 
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-
-
-  - class: Titled
-    label: measured_longitudinal_vel_kph
-    title: Long Vel[km/h]
-    input: measured_longitudinal_vel_kph
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-
-  - class: Titled
-    label: measured_heading_rate_rad
-    title: Heading Rate
-    input: { class: subscription, topic: /vehicle/status/velocity_status, field: heading_rate}
-    rules:
-      - { class: Precision, digits: 2 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-  - class: Titled
-    label: measured_steering_deg
-    title: Steering[deg]  
-    input: measured_steering_deg
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-  
-  - class: Titled
-    label: measured_heading_rate_deg
-    title: Heading Rate[deg/s]?
-    input: measured_heading_rate_deg
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-  - class: Titled
-    label: measured_acceleration
-    title: Acceleration[m/ss]
-    input: { class: subscription, topic: /vehicle/status/acceleration, field: data}
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
-  - class: Titled
-    label: measured_steering_velocity
-    title: SteerVel[deg/s]
-    input: { class: subscription, topic: /vehicle/status/angular_velocity, field: data}
-    rules:
-      - { class: Precision, digits: 1 }
-      - class: SetFirstIf
-        type: real
-        list:
-          - { ge: -1000.0, attrs: { back-color: white } }
-
   # Actuation_CMD(Pedal)
   - class: Titled
     label: throttle 
@@ -381,11 +263,6 @@ streams:
   - { label: measured_lateral_vel_mps, class: subscription, topic: /vehicle/status/velocity_status, field: lateral_velocity }
   - { label: measured_longitudinal_vel_kph, class: apply, input: measured_longitudinal_vel_mps, rules: f1 }
   - { label: measured_lateral_vel_kph, class: apply, input: measured_lateral_vel_mps, rules: f1 }
-    # Steering
-  - { label: measured_steering_rad, class: subscription, topic: /vehicle/status/steering_status, field: steering_tire_angle }
-  - { label: measured_heading_rate_rad, class: subscription, topic: /vehicle/status/velocity_status, field: heading_rate }
-  - { label: measured_steering_deg, class: apply, input: measured_steering_rad, rules: f2 }
-  - { label: measured_heading_rate_deg, class: apply, input: measured_heading_rate_rad, rules: f2 }
 
 
 
